@@ -1,0 +1,7 @@
+*#
+*.pyc
+*.pdf
+*.root
+*~
+*.log
+HGCalTreeMaker/python/__init__.py

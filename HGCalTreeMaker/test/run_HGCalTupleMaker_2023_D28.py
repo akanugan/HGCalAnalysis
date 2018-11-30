@@ -19,8 +19,8 @@ options.register ('skipEvents', 0, VarParsing.VarParsing.multiplicity.singleton,
 # /RelValSinglePiPt25Eta1p7_2p7/CMSSW_9_3_2-93X_upgrade2023_realistic_v2_2023D17noPU-v1/GEN-SIM-RECO
 # /SinglePiPt*Eta1p6_2p8/PhaseIITDRFall17*93X_upgrade2023_realistic_v2*/GEN-SIM-RECO
 #
-options.inputFiles = 'file:step3_D31_100e.root'
-options.outputFile = 'ntuples_ttbar_D31_100e.root'
+options.inputFiles = 'file:step3_D28_100e.root'
+options.outputFile = 'ntuples_ttbar_D28_100e.root'
 #
 # pt=5 GeV sample
 #options.inputFiles = '/store/mc/PhaseIITDRFall17DR/SinglePiPt5Eta1p6_2p8/GEN-SIM-RECO/noPUFEVT_93X_upgrade2023_realistic_v2-v1/00000/18D5CC99-22AA-E711-8020-90B11C08CDC7.root','/store/mc/PhaseIITDRFall17DR/SinglePiPt5Eta1p6_2p8/GEN-SIM-RECO/noPUFEVT_93X_upgrade2023_realistic_v2-v1/00000/B8AEECCD-22AA-E711-82FF-1866DA7F8E98.root'
@@ -81,8 +81,7 @@ process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
 #process.load('Configuration.Geometry.GeometryExtended2023D17Reco_cff')  # <=== to be checked
-#process.load('Configuration.Geometry.GeometryExtended2023D28Reco_cff')
-process.load('Configuration.Geometry.GeometryExtended2023D31Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2023D28Reco_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.RawToDigi_cff')
 process.load('Configuration.StandardSequences.L1Reco_cff')
@@ -109,22 +108,6 @@ process.load("HGCalAnalysis.HGCalTreeMaker.HGCalTupleMaker_SimTracks_cfi")
 process.load("HGCalAnalysis.HGCalTreeMaker.HGCalTupleMaker_RecoTracks_cfi")
 
 process.load("Validation.HGCalValidation.hgcalHitValidation_cfi")
-
-#
-# Adding HFNoseHits
-#
-process.hgcalTupleHGCSimHits.source = cms.untracked.VInputTag(
-        cms.untracked.InputTag("g4SimHits","HGCHitsEE"),
-        cms.untracked.InputTag("g4SimHits","HGCHitsHEfront"),
-        cms.untracked.InputTag("g4SimHits","HGCHitsHEback"),
-        cms.untracked.InputTag("g4SimHits","HFNoseHits")
-        )
-process.hgcalTupleHGCSimHits.geometrySource = cms.untracked.vstring(
-    'HGCalEESensitive',
-    'HGCalHESiliconSensitive',
-    'HGCalHEScintillatorSensitive',
-    'HGCalHFNoseSensitive'
-    )
 
 #------------------------------------------------------------------------------------
 # Specify Global Tag
@@ -156,4 +139,3 @@ process.preparation = cms.Path(
     #process.hgcalHitValidation*
     process.tuple_step
 )
-
