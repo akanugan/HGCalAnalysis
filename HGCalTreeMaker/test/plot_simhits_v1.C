@@ -7,7 +7,7 @@
   //c1->Divide(2,2);
   //c1->Print("test.pdf(",".pdf");
   //c1->cd(1);
-  TH2F* h1 = new TH2F("h1","Right HF nose Simhits",100,1020,1120,120,0,120);
+  TH2F* h1 = new TH2F("h1","h1",100,1020,1120,120,0,120);
   //  h1->GetXaxis()->SetLabel("HGCSimHitsPosz");
   //h1->GetYaxis()->SetLabel("pow(HGCSimHitsPosx**2+HGCSimHitsPosy**2,0.5)");
   //tree->Draw("pow(HGCSimHitsPosx**2+HGCSimHitsPosy**2,0.5):HGCSimHitsPosz","HGCSimHitsIndex==0","colz");
@@ -18,7 +18,9 @@
   //c1->cd(4);
 
   tree->Draw("pow(HGCSimHitsPosx**2+HGCSimHitsPosy**2,0.5):HGCSimHitsPosz>>h1","HGCSimHitsIndex==3","colz");
-  c1->SaveAs("test_h1.C");
+  h1->GetXaxis()->SetTitle("HGCSimHitsPosz"); h1->GetYaxis()->SetTitle("pow(HGCSimHitsPosx**2+HGCSimHitsPosy**2,0.5)"); h1->SetTitle("Right HF Nose Simhits");
+  gStyle->SetOptStat(0);
+  c1->SaveAs("test_h1.pdf");
   //c1->Print("test_h1.pdf(",".pdf");
 
   //TCanvas *c2 = new TCanvas("c2","c2",800,600);
