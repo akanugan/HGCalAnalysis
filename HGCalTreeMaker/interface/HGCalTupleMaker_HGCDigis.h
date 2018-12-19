@@ -23,6 +23,10 @@
 #include "Geometry/Records/interface/CaloGeometryRecord.h"
 #include "Geometry/HGCalGeometry/interface/HGCalGeometry.h"
 
+// PCaloHits objects
+#include "SimDataFormats/CaloHit/interface/PCaloHitContainer.h"
+#include "SimDataFormats/CaloHit/interface/PCaloHit.h"
+
 //
 #include "DataFormats/HcalDetId/interface/HcalDetId.h"
 
@@ -52,6 +56,8 @@ class HGCalTupleMaker_HGCDigis : public edm::EDProducer {
   edm::EDGetTokenT<HGCalDigiCollection> m_HGCEEDigisToken;
   edm::EDGetTokenT<HGCalDigiCollection> m_HGCHEDigisToken;
   edm::EDGetTokenT<HGCalDigiCollection> m_HGCBHDigisToken;
+  edm::EDGetTokenT<HGCalDigiCollection> m_HGCHFDigisToken;
+  
 
   std::vector<std::string> m_geometrySource;
 
@@ -70,6 +76,8 @@ class HGCalTupleMaker_HGCDigis : public edm::EDProducer {
   const HcalDDDSimConstants*            hcCons_;
   const HcalDDDRecConstants*            hcConr_;
   const CaloSubdetectorGeometry*        hcGeometry_;
+
+  edm::ESHandle<CaloGeometry> geometry;
   
   void produce( edm::Event & iEvent, const edm::EventSetup & iSetup) { 
 
@@ -86,6 +94,7 @@ class HGCalTupleMaker_HGCDigis : public edm::EDProducer {
     edm::Handle<HGCalDigiCollection> HGCEEDigis;
     edm::Handle<HGCalDigiCollection> HGCHEDigis;
     edm::Handle<HGCalDigiCollection> HGCBHDigis;
+    edm::Handle<HGCalDigiCollection> HGCHFDigis;
 
     int geomType(0);
     
@@ -241,6 +250,46 @@ class HGCalTupleMaker_HGCDigis : public edm::EDProducer {
 	}
 
       }
+      else if (nameDetector_ == "HGCalHFNoseSensitive") {
+
+    	edm::ESHandle<HGCalGeometry> geom;
+    	iSetup.get<IdealGeometryRecord>().get(nameDetector_, geom);
+    	if (!geom.isValid()) {
+    	  edm::LogWarning("HGCalTupleMaker_HGCDigis")
+    	    << "Cannot get valid HGCalGeometry Object for " << nameDetector_;
+    	  return;
+    	}
+    	const HGCalGeometry* geom0 = geom.product();
+	
+	//std::cout << nameDetector_ << " " << geomType << std::endl;
+
+	HGCHFDigis.clear();
+	iEvent.getByToken(m_HGCHFDigisToken, HGCHFDigis);
+	
+	const HGCalDigiCollection* hfDigis = HGCHFDigis.product(); // get a ptr to the product
+	for(auto it = hfDigis->begin(); it != hfDigis->end(); ++it) {
+	  //worker_->run1(evt, it, *heUncalibRechits);
+
+	  //KH HGCHEDetId detId     = (it->id());
+	  //KH int        layer     = detId.layer();
+	  HFNoseDetId    detId     = it->id();
+	  int        layer     = detId.layer();
+	  HGCSample  hgcSample = it->sample(SampleIndx);
+	  uint16_t   gain      = hgcSample.toa();
+	  uint16_t   adc       = hgcSample.data();
+	  double     charge    = adc*gain;
+	  fill(detId, geom0, index, layer, adc, charge);
+	  
+	  if (debug){
+	  for (int i=0; i< 10; i++){
+	    HGCSample  hgcSampleTmp = it->sample(i);	    
+	    printf("HE isample: %6d, adc: %8d (%8d)\n",i,hgcSampleTmp.data(),adc);
+	  }
+	  }
+	  
+	}
+	
+      }
       //----------
       /*
       else if (nameDetector_ == "HCal") {
@@ -303,11 +352,12 @@ class HGCalTupleMaker_HGCDigis : public edm::EDProducer {
     m_geometrySource (iConfig.getUntrackedParameter<std::vector<std::string> >("geometrySource")),
     m_prefix         (iConfig.getUntrackedParameter<std::string>  ("Prefix")),
     m_suffix         (iConfig.getUntrackedParameter<std::string>  ("Suffix")),
-    SampleIndx       (iConfig.getUntrackedParameter<int>("SampleIndx",2)) {
+    SampleIndx       (iConfig.getUntrackedParameter<int>("SampleIndx",3)) {
     
     m_HGCEEDigisToken = consumes<HGCalDigiCollection>(m_HGCDigisTags[0]);
     m_HGCHEDigisToken = consumes<HGCalDigiCollection>(m_HGCDigisTags[1]);
     m_HGCBHDigisToken = consumes<HGCalDigiCollection>(m_HGCDigisTags[2]);
+    m_HGCHFDigisToken = consumes<HGCalDigiCollection>(m_HGCDigisTags[3]);
     
     produces<std::vector<float> > ( m_prefix + "Eta"    + m_suffix );
     produces<std::vector<float> > ( m_prefix + "Phi"    + m_suffix );
@@ -490,8 +540,16 @@ class HGCalTupleMaker_HGCDigis : public edm::EDProducer {
 
     int    cellU=-100, cellV=-100, waferU=-100, waferV=-100;
     int    ieta=-100, iphi=-100, ietaAbs=-100;
+    
+    if (m_geometrySource[index]=="HGCalHFNoseSensitive") {
+      HFNoseDetId detId0 = HFNoseDetId(detId);
+      cellU    = detId0.cellU(); 
+      cellV    = detId0.cellV(); 
+      waferU   = detId0.waferU();
+      waferV   = detId0.waferV();
+    }
 
-    if ((mode == HGCalGeometryMode::Hexagon8) ||
+    else if ((mode == HGCalGeometryMode::Hexagon8) ||
 	(mode == HGCalGeometryMode::Hexagon8Full)){
       HGCSiliconDetId detId0 = HGCSiliconDetId(detId);
       cellU            = detId0.cellU();

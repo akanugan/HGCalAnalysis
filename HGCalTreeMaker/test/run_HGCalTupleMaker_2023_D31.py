@@ -19,7 +19,7 @@ options.register ('skipEvents', 0, VarParsing.VarParsing.multiplicity.singleton,
 # /RelValSinglePiPt25Eta1p7_2p7/CMSSW_9_3_2-93X_upgrade2023_realistic_v2_2023D17noPU-v1/GEN-SIM-RECO
 # /SinglePiPt*Eta1p6_2p8/PhaseIITDRFall17*93X_upgrade2023_realistic_v2*/GEN-SIM-RECO
 #
-options.inputFiles = 'file:step3_D31.root'
+options.inputFiles = 'file:matrixTestSubmit/step3_D31.root'
 options.outputFile = 'ntupleDigis_ttbar_D31.root'
 #
 # pt=5 GeV sample

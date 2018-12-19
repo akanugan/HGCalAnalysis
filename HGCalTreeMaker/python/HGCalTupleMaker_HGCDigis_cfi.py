@@ -7,12 +7,15 @@ hgcalTupleHGCDigis = cms.EDProducer("HGCalTupleMaker_HGCDigis",
         #cms.untracked.InputTag("mix","HGCDigisHEback")
         cms.untracked.InputTag("hgcalDigis","EE"),
         cms.untracked.InputTag("hgcalDigis","HEfront"),
-        cms.untracked.InputTag("hgcalDigis","HEback")
+        cms.untracked.InputTag("hgcalDigis","HEback"),
+        cms.untracked.InputTag("hgcalDigis","HFNose")
         ),
   geometrySource = cms.untracked.vstring(
         'HGCalEESensitive',
         'HGCalHESiliconSensitive',
-        'HGCalHEScintillatorSensitive'
+        'HGCalHEScintillatorSensitive',
+        'HGCalHFNoseSensitive'
+        
   ),
   Prefix = cms.untracked.string  ("HGCDigi"),
   Suffix = cms.untracked.string  ("")
