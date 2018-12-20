@@ -7,7 +7,7 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process('RECO',eras.Phase2C4)
+process = cms.Process('RECO',eras.Phase2C6) ## changed from C4 to C6
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -15,7 +15,7 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
-process.load('Configuration.Geometry.GeometryExtended2023D28Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2023D31Reco_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.RawToDigi_cff')
 process.load('Configuration.StandardSequences.L1Reco_cff')
@@ -58,6 +58,7 @@ process.FEVTDEBUGHLToutput = cms.OutputModule("PoolOutputModule",
     outputCommands = process.FEVTDEBUGHLTEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )
+
 
 process.MINIAODSIMoutput = cms.OutputModule("PoolOutputModule",
     compressionAlgorithm = cms.untracked.string('LZMA'),
@@ -133,6 +134,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
 process.FEVTDEBUGHLToutput.outputCommands.append('keep *_HGCalUncalibRecHit_*_*')
 process.FEVTDEBUGHLToutput.outputCommands.append('keep *_HGCDigis*_*_*')
 process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hgcalDigis*_*_*')
+process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hfnoseDigis*_*_*')
 #process.MINIAODSIMoutput.outputCommands.append('keep *_HGCalUncalibRecHit_*_*')
 #process.MINIAODSIMoutput.outputCommands.append('keep *_HGCDigis*_*_*')
 #process.MINIAODSIMoutput.outputCommands.append('keep *_hgcalDigis*_*_*')

@@ -8,7 +8,7 @@ hgcalTupleHGCDigis = cms.EDProducer("HGCalTupleMaker_HGCDigis",
         cms.untracked.InputTag("hgcalDigis","EE"),
         cms.untracked.InputTag("hgcalDigis","HEfront"),
         cms.untracked.InputTag("hgcalDigis","HEback"),
-        cms.untracked.InputTag("hgcalDigis","HFNose")
+        cms.untracked.InputTag("hfnoseDigis","HFNose")
         ),
   geometrySource = cms.untracked.vstring(
         'HGCalEESensitive',
